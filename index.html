@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>در حال اتصال به مشاور…</title>
+<style>
+  body{font-family:Tahoma,sans-serif;text-align:center;padding:48px 20px;background:#faf7f2;color:#333}
+  a.btn{display:inline-block;margin-top:20px;padding:14px 28px;background:#25d366;color:#fff;border-radius:12px;text-decoration:none;font-size:17px}
+</style>
+</head>
+<body>
+<h3>در حال اتصال شما به مشاور…</h3>
+<p>اگر به‌صورت خودکار باز نشد، دکمه زیر را بزنید.</p>
+<a class="btn" id="fallback" href="#">ارسال پیام در واتساپ</a>
+
+<script>
+// ===== تنظیمات: فقط این بخش را ویرایش کن =====
+const CONSULTANTS = [
+  { name: "مشاور ۱", phone: "989363693310", weight: 1, active: true },
+  { name: "مشاور ۲", phone: "989363713310", weight: 1, active: true },
+  { name: "مشاور ۳", phone: "989305223313", weight: 1, active: true },
+];
+
+const MESSAGES = {
+  default:  "سلام، از اینستاگرام باباعلی اومدم و مشاوره می‌خوام",
+  tanbali:  "سلام، از اینستاگرام باباعلی اومدم. درباره تنبلی تخمدان مشاوره می‌خوام",
+  kist:     "سلام، از اینستاگرام باباعلی اومدم. درباره کیست مشاوره می‌خوام",
+  baroori:  "سلام، از اینستاگرام باباعلی اومدم. درباره باروری مشاوره می‌خوام",
+};
+// ===========================================
+
+const pool = CONSULTANTS.filter(c => c.active && c.weight > 0);
+let total = pool.reduce((s, c) => s + c.weight, 0);
+let r = Math.random() * total, pick = pool[0];
+for (const c of pool) { r -= c.weight; if (r <= 0) { pick = c; break; } }
+
+const topic = new URLSearchParams(location.search).get("t");
+const text = MESSAGES[topic] || MESSAGES.default;
+const url = "https://wa.me/" + pick.phone + "?text=" + encodeURIComponent(text);
+
+document.getElementById("fallback").href = url;
+location.replace(url);
+</script>
+</body>
+</html>
